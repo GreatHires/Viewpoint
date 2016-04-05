@@ -437,7 +437,7 @@ module Viewpoint::EWS::SOAP
     def time_zone!(zone)
       zone ||= {}
       zone = {
-        bias: zone[:bias] || 480,
+        bias: zone[:bias] || 0,
         standard_time: {
           bias: 0,
           time: "02:00:00",
@@ -446,7 +446,7 @@ module Viewpoint::EWS::SOAP
           day_of_week: 'Sunday'
         }.merge(zone[:standard_time] || {}),
         daylight_time: {
-          bias: -60,
+          bias: 0,
           time: "02:00:00",
           day_order: 1,
           month: 4,
