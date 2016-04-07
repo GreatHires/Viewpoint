@@ -27,6 +27,7 @@ module Viewpoint::EWS::Types
 
     MAILBOX_KEY_PATHS = {
       name: [:name],
+      display_name: [:display_name],
       email_address: [:email_address],
     }
     MAILBOX_KEY_TYPES = {}
