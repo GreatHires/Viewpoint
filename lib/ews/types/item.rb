@@ -375,9 +375,9 @@ module Viewpoint::EWS::Types
     def build_attendees_users(users)
       return [] if users.nil?
       users.collect do |u|
-        u[:attendee][:elems].collect do |a|
-          build_mailbox_user(a[:mailbox][:elems]) if a[:mailbox]
-        end
+        mailbox_elems = u[:attendee][:elems].detect {|e| e[:mailbox].present?}[:mailbox][:elems]
+        mailbox_elems << u[:attendee][:elems].detect {|e| e[:response_type].present?}
+        build_mailbox_user(mailbox_elems)
       end.flatten.compact
     end
 
