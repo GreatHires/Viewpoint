@@ -54,6 +54,7 @@ module Viewpoint::EWS::Types
     # @see http://msdn.microsoft.com/en-us/library/exchange/aa580254.aspx
     # @todo AppendToItemField updates not implemented
     def update_item!(updates, options = {})
+      require 'pry';binding.pry
       item_updates = []
       updates.each do |attribute, value|
         item_field = FIELD_URIS[attribute][:text] if FIELD_URIS.include? attribute
@@ -64,6 +65,7 @@ module Viewpoint::EWS::Types
           item_updates << {delete_item_field: field}
         elsif item_field
           # Build SetItemField Change
+          require 'pry';binding.pry
           item = Viewpoint::EWS::Template::CalendarItem.new(attribute => value)
 
           # Remap attributes because ews_builder #dispatch_field_item! uses #build_xml!

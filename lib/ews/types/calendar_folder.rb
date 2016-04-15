@@ -36,6 +36,7 @@ module Viewpoint::EWS::Types
     # @return [CalendarItem]
     # @see Template::CalendarItem
     def create_item(attributes, to_ews_create_opts = {})
+      require 'pry';binding.pry
       template = Viewpoint::EWS::Template::CalendarItem.new attributes
       template.saved_item_folder_id = {id: self.id, change_key: self.change_key}
       rm = ews.create_item(template.to_ews_create(to_ews_create_opts)).response_messages.first
