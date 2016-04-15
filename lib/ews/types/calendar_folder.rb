@@ -39,6 +39,7 @@ module Viewpoint::EWS::Types
       require 'pry';binding.pry
       template = Viewpoint::EWS::Template::CalendarItem.new attributes
       template.saved_item_folder_id = {id: self.id, change_key: self.change_key}
+      require 'pry';binding.pry
       rm = ews.create_item(template.to_ews_create(to_ews_create_opts)).response_messages.first
       if rm && rm.success?
         CalendarItem.new ews, rm.items.first[:calendar_item][:elems].first

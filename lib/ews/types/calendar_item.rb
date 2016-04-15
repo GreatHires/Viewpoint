@@ -54,8 +54,11 @@ module Viewpoint::EWS::Types
     # @see http://msdn.microsoft.com/en-us/library/exchange/aa580254.aspx
     # @todo AppendToItemField updates not implemented
     def update_item!(updates, options = {})
-      require 'pry';binding.pry
       item_updates = []
+      
+      # TRY JUST NEW CALENDARITEM WITH UPDATES
+
+
       updates.each do |attribute, value|
         item_field = FIELD_URIS[attribute][:text] if FIELD_URIS.include? attribute
         field = {field_uRI: {field_uRI: item_field}}
@@ -65,7 +68,6 @@ module Viewpoint::EWS::Types
           item_updates << {delete_item_field: field}
         elsif item_field
           # Build SetItemField Change
-          require 'pry';binding.pry
           item = Viewpoint::EWS::Template::CalendarItem.new(attribute => value)
 
           # Remap attributes because ews_builder #dispatch_field_item! uses #build_xml!
@@ -79,6 +81,15 @@ module Viewpoint::EWS::Types
                 node[name][attrib_key] = attrib_value
               end
               node
+            # elsif value.is_a? Array
+            #   node = {name => {}}
+            #   value.each do |attrib_key, attrib_value|
+            #     require 'pry';binding.pry
+            #     attrib_key = camel_case(attrib_key) unless attrib_key == :text
+            #     node[name][attrib_key] = attrib_value
+            #   end
+            #   node
+            #   require 'pry';binding.pry
             else
               {name => value}
             end
@@ -95,8 +106,11 @@ module Viewpoint::EWS::Types
         data[:conflict_resolution] = options[:conflict_resolution] || 'AutoResolve'
         data[:send_meeting_invitations_or_cancellations] = options[:send_meeting_invitations_or_cancellations] || 'SendToNone'
         data[:item_changes] = [{item_id: self.item_id, updates: item_updates}]
+        require 'pry';binding.pry
         rm = ews.update_item(data).response_messages.first
         if rm && rm.success?
+          CalendarItem.new ews, rm.items.first[:calendar_item][:elems].first
+
           self.get_all_properties!
           self
         else
