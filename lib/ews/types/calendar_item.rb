@@ -80,7 +80,19 @@ module Viewpoint::EWS::Types
             elsif value.is_a? Array
               attendee_array = []
               value.each do |attendee_hash|
-                attendee_array.push({ attendee: { sub_elements: { mailbox: { sub_elements: { email_address: {text: attendee_hash[:attendee][:mailbox][:email_address]} } } } } })
+                attendee_array.push(
+                  attendee:
+                    { sub_elements:
+                      { mailbox:
+                        { sub_elements:
+                          { email_address:
+                            { text: attendee_hash[:attendee][:mailbox][:email_address]
+                            }
+                          }
+                        }
+                      }
+                    }
+                )
               end
               {name => {sub_elements: attendee_array}}
             else
