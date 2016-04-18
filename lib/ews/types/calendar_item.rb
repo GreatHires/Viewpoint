@@ -55,10 +55,6 @@ module Viewpoint::EWS::Types
     # @todo AppendToItemField updates not implemented
     def update_item!(updates, options = {})
       item_updates = []
-      
-      # TRY JUST NEW CALENDARITEM WITH UPDATES
-
-
       updates.each do |attribute, value|
         item_field = FIELD_URIS[attribute][:text] if FIELD_URIS.include? attribute
         field = {field_uRI: {field_uRI: item_field}}
@@ -81,20 +77,16 @@ module Viewpoint::EWS::Types
                 node[name][attrib_key] = attrib_value
               end
               node
-            # elsif value.is_a? Array
-            #   node = {name => {}}
-            #   value.each do |attrib_key, attrib_value|
-            #     require 'pry';binding.pry
-            #     attrib_key = camel_case(attrib_key) unless attrib_key == :text
-            #     node[name][attrib_key] = attrib_value
-            #   end
-            #   node
-            #   require 'pry';binding.pry
+            elsif value.is_a? Array
+              attendee_array = []
+              value.each do |attendee_hash|
+                attendee_array.push({ attendee: { sub_elements: { mailbox: { sub_elements: { email_address: {text: attendee_hash[:attendee][:mailbox][:email_address]} } } } } })
+              end
+              {name => {sub_elements: attendee_array}}
             else
               {name => value}
             end
           end
-
           item_updates << {set_item_field: field.merge(calendar_item: {sub_elements: item_attributes})}
         else
           # Ignore unknown attribute
@@ -106,11 +98,8 @@ module Viewpoint::EWS::Types
         data[:conflict_resolution] = options[:conflict_resolution] || 'AutoResolve'
         data[:send_meeting_invitations_or_cancellations] = options[:send_meeting_invitations_or_cancellations] || 'SendToNone'
         data[:item_changes] = [{item_id: self.item_id, updates: item_updates}]
-        require 'pry';binding.pry
         rm = ews.update_item(data).response_messages.first
         if rm && rm.success?
-          CalendarItem.new ews, rm.items.first[:calendar_item][:elems].first
-
           self.get_all_properties!
           self
         else
