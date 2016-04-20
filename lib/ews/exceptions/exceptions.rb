@@ -18,7 +18,10 @@
 module Viewpoint::EWS
 
   # Generic Ews Error
-  class EwsError < StandardError; end
+  class EwsError < StandardError
+    attr_accessor :code
+    attr_accessor :type
+  end
 
   # Raise when authentication/authorization issues occur.
   class EwsLoginError < EwsError; end

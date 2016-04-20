@@ -87,7 +87,10 @@ private
     if(resp.status == 'Success')
       resp
     else
-      raise EwsError, "GetUserAvailability produced an error: #{resp.code}: #{resp.message}"
+      error = EwsError.new("GetUserAvailability produced an error: #{resp.code}: #{resp.message}")
+      error.type = resp.response_message[:elems][3][:message_xml][:elems][0][:exception_type][:text]
+      error.code = resp.response_message[:elems][3][:message_xml][:elems][1][:exception_code][:text]
+      raise error
     end
   end
 
