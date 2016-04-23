@@ -34,6 +34,8 @@ module Viewpoint::EWS::MailboxAccessors
     elsif(resp.code == 'ErrorNameResolutionMultipleResults')
       resp.response_message[:elems][:resolution_set][:elems].each do |u|
       if u[:resolution][:elems][0][:mailbox]
+        contact_elems = u[:resolution][:elems][1][:contact][:elems]
+        u[:resolution][:elems][0][:mailbox][:elems].push(contact_elems.detect{|el| el.key?(:display_name) } || {})
         users << Types::MailboxUser.new(ews, u[:resolution][:elems][0][:mailbox][:elems])
       end
       end
