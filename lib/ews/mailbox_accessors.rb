@@ -32,7 +32,7 @@ module Viewpoint::EWS::MailboxAccessors
       mb[:mailbox][:elems].push(contact_elems.detect{|el| el.key?(:display_name) } || {})
       mb[:mailbox][:elems].push(contact_elems.detect{|el| el.key?(:given_name) } || {})
       mb[:mailbox][:elems].push(contact_elems.detect{|el| el.key?(:surname) } || {})
-      users << Types::MailboxUser.new(ews, mb[:mailbox][:elems])
+      users << Types::MailboxUser.new(ews, mb[:mailbox][:elems].reject(&:empty?))
     elsif(resp.code == 'ErrorNameResolutionMultipleResults')
       resp.response_message[:elems][:resolution_set][:elems].each do |u|
       if u[:resolution][:elems][0][:mailbox]
@@ -40,7 +40,7 @@ module Viewpoint::EWS::MailboxAccessors
         u[:resolution][:elems][0][:mailbox][:elems].push(contact_elems.detect{|el| el.key?(:display_name) } || {})
         u[:resolution][:elems][0][:mailbox][:elems].push(contact_elems.detect{|el| el.key?(:given_name) } || {})
         u[:resolution][:elems][0][:mailbox][:elems].push(contact_elems.detect{|el| el.key?(:surname) } || {})
-        users << Types::MailboxUser.new(ews, u[:resolution][:elems][0][:mailbox][:elems])
+        users << Types::MailboxUser.new(ews, u[:resolution][:elems][0][:mailbox][:elems].reject(&:empty?))
       end
       end
     else
