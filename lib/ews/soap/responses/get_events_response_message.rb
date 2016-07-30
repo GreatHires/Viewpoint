@@ -32,6 +32,12 @@ module Viewpoint::EWS::SOAP
     end
 
     def new_watermark
+      unless notification
+        error = EwsError.new
+        error.code = '500'
+        error.type = 'ErrorInvalidWatermark'
+        raise error
+      end
       ev = notification.last
       if ev
         type = ev.keys.first
