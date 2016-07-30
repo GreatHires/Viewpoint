@@ -33,7 +33,7 @@ module Viewpoint::EWS::SOAP
 
     def new_watermark
       unless notification
-        error = EwsError.new
+        error = Viewpoint::EWS::EwsError.new
         error.code = '500'
         error.type = 'ErrorInvalidWatermark'
         raise error
