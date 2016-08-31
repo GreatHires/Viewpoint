@@ -753,7 +753,7 @@ module Viewpoint::EWS::SOAP
     def convert_id(opts)
       opts = opts.clone
 
-      [:id, :format, :destination_format, :mailbox ].each do |k|
+      [:id, :format, :destination_format ].each do |k|
         validate_param(opts, k, true)
       end
 
@@ -762,10 +762,10 @@ module Viewpoint::EWS::SOAP
         else
           builder.nbuild.ConvertId {|x|
             builder.nbuild.parent.default_namespace = @default_ns
-            x.parent['DestinationFormat'] = opts[:destination_format].to_s.camel_case
+            x.parent['DestinationFormat'] = opts[:destination_format].to_s.split('_').collect(&:capitalize).join
             x.SourceIds { |x|
               x[NS_EWS_TYPES].AlternateId { |x|
-                x.parent['Format'] = opts[:format].to_s.camel_case
+                x.parent['Format'] = opts[:format].to_s.split('_').collect(&:capitalize).join
                 x.parent['Id'] = opts[:id]
                 x.parent['Mailbox'] = opts[:mailbox]
               }
