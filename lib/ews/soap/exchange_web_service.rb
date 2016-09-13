@@ -44,6 +44,7 @@ module Viewpoint::EWS::SOAP
       @no_auto_deepen_behavior = :raise
       @impersonation_type = ""
       @impersonation_address = ""
+      @time_zone_context = opts[:time_zone_context]
     end
 
     def delete_attachment
