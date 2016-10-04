@@ -18,10 +18,6 @@
 
 module Viewpoint
   module EWS
-    attr_reader :logger
 
-    def self.root_logger
-      Logging.logger.root
-    end
   end # EWS
 end

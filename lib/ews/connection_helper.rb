@@ -18,17 +18,13 @@
 
 module Viewpoint::EWS::ConnectionHelper
 
-  def init_logging!
-    @log = Logging.logger[self.class.name.to_s.to_sym]
-  end
-
   # @param [String] xml to parse the errors from.
   def parse_soap_error(xml)
     ndoc = Nokogiri::XML(xml)
     ns = ndoc.collect_namespaces
     err_string  = ndoc.xpath("//faultstring",ns).text
     err_code    = ndoc.xpath("//faultcode",ns).text
-    @log.debug "Internal SOAP error. Message: #{err_string}, Code: #{err_code}" if Logging.logger.root.appenders.any?
+    puts "Internal SOAP error. Message: #{err_string}, Code: #{err_code}" if Viewpoint::EWS.log_enabled?
     [err_string, err_code]
   end
 

@@ -54,19 +54,9 @@ module Viewpoint
       SOFT_DELETE = 'SoftDelete'
       MOVE_TO_DELETED_ITEMS = 'MoveToDeletedItems'
 
-      module ClassMethods
-        def log
-          @log ||= Logging.logger[self.class.name.to_s.to_sym]
-        end
-      end
 
       def initialize
-        @log = self.class.log
         @default_ns = NAMESPACES["xmlns:#{NS_EWS_MESSAGES}"]
-      end
-
-      def self.included(klass)
-        klass.extend ClassMethods
       end
 
     end # SOAP

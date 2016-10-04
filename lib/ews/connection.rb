@@ -28,12 +28,7 @@ class Viewpoint::EWS::Connection
   # @option opts [Fixnum] :ssl_verify_mode
   # @option opts [Array]  :trust_ca an array of hashed dir paths or a file
 
-  def self.log
-    @log ||= Logging.logger[self.class.name.to_s.to_sym]
-  end
-
   def initialize(endpoint, opts = {})
-    @log = self.class.log
     @httpcli = HTTPClient.new
     if opts[:trust_ca]
       @httpcli.ssl_config.clear_cert_store
@@ -70,13 +65,13 @@ class Viewpoint::EWS::Connection
   # @param opts [Hash] misc opts for handling the Response
   def dispatch(ews, soapmsg, opts)
     respmsg = post(soapmsg)
-    @log.debug( <<-EOF.gsub(/^ {6}/, '')
+    puts( <<-EOF.gsub(/^ {6}/, '')
         Received SOAP Response:
         ----------------
         #{Nokogiri::XML(respmsg).to_xml}
         ----------------
       EOF
-    )  if Logging.logger.root.appenders.any?
+    )  if Viewpoint::EWS.log_enabled?
     opts[:raw_response] ? respmsg : ews.parse_soap_response(respmsg, opts)
   end
 
@@ -125,7 +120,7 @@ class Viewpoint::EWS::Connection
     ns = ndoc.collect_namespaces
     err_string  = ndoc.xpath("//faultstring",ns).text
     err_code    = ndoc.xpath("//faultcode",ns).text
-    @log.debug "Internal SOAP error. Message: #{err_string}, Code: #{err_code}"  if Logging.logger.root.appenders.any?
+    puts "Internal SOAP error. Message: #{err_string}, Code: #{err_code}" if Viewpoint::EWS.log_enabled?
     [err_string, err_code]
   end
 

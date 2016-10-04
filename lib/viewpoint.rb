@@ -21,7 +21,6 @@ require 'date'
 require 'base64'
 require 'nokogiri'
 require 'ostruct'
-require 'logging'
 
 # String utilities
 require 'viewpoint/string_utils'
@@ -107,3 +106,12 @@ require 'ews/templates/task'
 
 # The proxy between the models and the web service
 require 'ews/ews_client'
+
+module Viewpoint
+  module EWS
+
+    def self.log_enabled?
+      false
+    end
+  end # EWS
+end

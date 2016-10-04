@@ -18,7 +18,8 @@
 
 module Viewpoint
   module EWS
-    Logging.logger.root.level = :debug
-    Logging.logger.root.appenders = Logging.appenders.stdout
+    def self.log_enabled?
+      true
+    end
   end # EWS
 end
