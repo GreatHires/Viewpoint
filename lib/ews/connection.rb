@@ -27,8 +27,13 @@ class Viewpoint::EWS::Connection
   # @param [Hash] opts Misc config options (mostly for developement)
   # @option opts [Fixnum] :ssl_verify_mode
   # @option opts [Array]  :trust_ca an array of hashed dir paths or a file
+
+  def self.log
+    @log ||= Logging.logger[self.class.name.to_s.to_sym]
+  end
+
   def initialize(endpoint, opts = {})
-    @log = Logging.logger[self.class.name.to_s.to_sym]
+    @log = self.class.log
     @httpcli = HTTPClient.new
     if opts[:trust_ca]
       @httpcli.ssl_config.clear_cert_store
